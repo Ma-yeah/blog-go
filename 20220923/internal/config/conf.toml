@@ -1,0 +1,5 @@
+[log]
+# 日志级别，非必填，默认级为 info
+level = "debug"
+# 日志是否记录到文件
+#file = false
