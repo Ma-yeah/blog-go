@@ -1,7 +1,7 @@
-package api
+package runner
 
 import (
-	"20231217/enums"
+	"20231217/internal/enums"
 	"github.com/robfig/cron/v3"
 	"github.com/spf13/viper"
 )

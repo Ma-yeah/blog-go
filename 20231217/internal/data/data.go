@@ -3,12 +3,13 @@ package data
 import (
 	"context"
 	"github.com/go-redis/redis/v8"
+	"github.com/spf13/viper"
 	"time"
 )
 
-func NewRedis() (redis.UniversalClient, error) {
+func newRedis() redis.UniversalClient {
 	c := redis.NewUniversalClient(&redis.UniversalOptions{
-		Addrs:        []string{"127.0.0.1:6379"},
+		Addrs:        viper.GetStringSlice("data.redis.addrs"),
 		DB:           0,
 		MaxRetries:   1,
 		DialTimeout:  time.Second * 5,
@@ -20,13 +21,17 @@ func NewRedis() (redis.UniversalClient, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 	if err := c.Ping(ctx).Err(); err != nil {
-		return nil, err
+		panic(err)
 	}
-	return c, nil
+	return c
 }
 
-var GlobalRedis redis.UniversalClient
+type Repo struct {
+	Redis redis.UniversalClient
+}
 
-func init() {
-	GlobalRedis, _ = NewRedis()
+func NewRepo() *Repo {
+	return &Repo{
+		Redis: newRedis(),
+	}
 }
